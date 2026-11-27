@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Arab tili daraja testi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f2e7;--card:#fffdf8;--ink:#1f2a25;--mut:#6b746f;--line:#e6dcc7;--pri:#1f5f4a;--pri2:#2a7a60;--gold:#c49a3a;--ok:#2a7a4a;--bad:#b4442f;--sel:#e7f1ec}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121815;--card:#1a221e;--ink:#ece7da;--mut:#9aa39d;--line:#2c3832;--pri:#3d9a7a;--pri2:#4fb08e;--gold:#d8b25a;--sel:#21362d}}
+:root[data-theme="dark"]{--bg:#121815;--card:#1a221e;--ink:#ece7da;--mut:#9aa39d;--line:#2c3832;--pri:#3d9a7a;--pri2:#4fb08e;--gold:#d8b25a;--sel:#21362d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;min-height:100vh}
+.ar,[lang=ar]{font-family:"Noto Naskh Arabic",serif;direction:rtl;unicode-bidi:isolate}
+.wrap{max-width:640px;margin:0 auto;padding:16px 16px 40px}
+.brand{display:flex;align-items:center;gap:10px;margin:6px 0 18px}
+.logo{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--pri),var(--pri2));display:grid;place-items:center;color:#fff;font-weight:700;font-size:20px}
+.brand b{display:block;font-size:17px}.brand small{color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+h1{font-size:22px;margin:0 0 6px}h2{font-size:18px;margin:0 0 10px}
+p{margin:6px 0}
+label{display:block;font-weight:600;font-size:14px;margin:12px 0 4px}
+input,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;font-size:17px}
+input:focus,textarea:focus{outline:2px solid var(--pri);border-color:transparent}
+textarea{min-height:170px;resize:vertical;font-family:"Noto Naskh Arabic",serif;font-size:20px;line-height:1.8}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;font:600 17px Inter,sans-serif;cursor:pointer;margin-top:16px;box-shadow:0 4px 14px rgba(31,95,74,.25)}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.ghost{background:transparent;color:var(--pri);border:1px solid var(--line);box-shadow:none}
+.err{color:var(--bad);font-size:14px;margin-top:8px}
+ul.rules{padding-left:20px;margin:8px 0}ul.rules li{margin:5px 0}
+.top{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;margin-bottom:6px}
+.toprow{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.badge{background:var(--pri);color:#fff;border-radius:8px;padding:3px 10px;font-weight:700;font-size:14px}
+.sec{color:var(--mut);font-size:14px;font-weight:600}
+.timer{font-variant-numeric:tabular-nums;font-weight:700;padding:3px 10px;border-radius:8px;border:1px solid var(--line);background:var(--card)}
+.timer.low{color:#fff;background:var(--bad);border-color:var(--bad)}
+.bar{height:6px;background:var(--line);border-radius:4px;margin-top:8px;overflow:hidden}.bar i{display:block;height:100%;background:var(--gold);transition:width .3s}
+.ins{color:var(--mut);font-size:15px;margin-bottom:8px}
+.q{font-size:19px;font-weight:600;margin-bottom:14px}
+.q .ar,.opt .ar{font-size:23px;font-weight:500}
+.rtl{direction:rtl;text-align:right;font-family:"Noto Naskh Arabic",serif}
+.rtl .q{font-size:23px;font-weight:600}
+.text{font-family:"Noto Naskh Arabic",serif;direction:rtl;text-align:justify;font-size:21px;line-height:2;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px;max-height:42vh;overflow:auto;margin-bottom:14px}
+.opts{display:grid;gap:10px}
+.opt{width:100%;text-align:start;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;font-size:17px;cursor:pointer}
+.rtl .opt{font-family:"Noto Naskh Arabic",serif;font-size:21px;text-align:right}
+.opt.on{border-color:var(--pri);background:var(--sel);font-weight:600}
+.hint{background:var(--sel);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:15px}
+.built{min-height:64px;border:1.5px dashed var(--pri);border-radius:12px;padding:8px;display:flex;flex-wrap:wrap;gap:8px;direction:rtl;margin-bottom:12px;align-content:flex-start}
+.pool{display:flex;flex-wrap:wrap;gap:8px;direction:rtl}
+.chip{font-family:"Noto Naskh Arabic",serif;font-size:21px;padding:6px 13px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.built .chip{background:var(--sel);border-color:var(--pri)}
+.chip.used{visibility:hidden}
+.tin{direction:rtl;font-family:"Noto Naskh Arabic",serif;font-size:24px;text-align:right}
+.kb{display:grid;grid-template-columns:repeat(11,1fr);gap:4px;margin-top:10px;direction:rtl}
+.kb button{padding:9px 0;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);font:500 19px "Noto Naskh Arabic",serif;cursor:pointer}
+.kb button.w2{grid-column:span 2;font:600 14px Inter,sans-serif}
+.kb button.w4{grid-column:span 4;font:600 14px Inter,sans-serif}
+.kbt{background:none;border:0;color:var(--pri);font:600 14px Inter,sans-serif;cursor:pointer;padding:6px 0;margin-top:6px}
+.big{font-size:44px;font-weight:800;color:var(--pri);margin:4px 0}
+.center{text-align:center}
+.muted{color:var(--mut);font-size:14px}
+.foot{color:var(--mut);text-align:center;font-size:13px;margin-top:20px}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+// ====== SOZLAMA ======
+const BOT_TOKEN = '9129491317:AAHDzmKO0EIbbiFvj2W3BdcPmi3CCuoBTI8';
+const CHAT_ID = '5052949508';
+const PASS = 0.8;   // 80%
+
+// ====== SAVOLLAR ======
+// Har savolda birinchi variant - TO'G'RI javob (ko'rsatishda aralashtiriladi)
+const L = [
+{id:'A0', uz:true, time:8*60,
+ ins:{g:"To'g'ri javobni tanlang", r:"Matnni o'qing va savolga javob bering", o:"So'zlarni to'g'ri tartibda bosib, gap tuzing", sec:["Qoida","O'qish","Yozish"]},
+ g:[
+  ['<span class=ar>___ كِتَابٌ</span> — «Bu kitob»','هٰذَا','هٰذِهِ','هُوَ','أَنَا'],
+  ['<span class=ar>___ سَيَّارَةٌ</span> — «Bu mashina»','هٰذِهِ','هٰذَا','هُوَ','نَحْنُ'],
+  ["Qaysi so'z ayol jinsida (muannas)?",'مُعَلِّمَةٌ','مُعَلِّمٌ','طَالِبٌ','بَابٌ'],
+  ["«Men talabaman» arabchasi qaysi?",'أَنَا طَالِبٌ','أَنْتَ طَالِبٌ','هُوَ طَالِبٌ','هِيَ طَالِبٌ'],
+  ["«الْ» qo'shilgan so'zning to'g'ri shakli qaysi?",'الْبَيْتُ','الْبَيْتٌ','بَيْتُالْ','الْبَيْتًا'],
+  ['<span class=ar>مَنْ هٰذِهِ؟ — ___ لَيْلَى.</span>','هِيَ','هُوَ','أَنَا','أَنْتَ']
+ ],
+ r:{text:'أَنَا كَرِيمٌ. أَنَا طَالِبٌ. هٰذَا بَيْتِي. بَيْتِي كَبِيرٌ. هٰذِهِ أُمِّي. أُمِّي مُعَلِّمَةٌ. هٰذَا قَلَمِي. قَلَمِي أَزْرَقُ.',
+  q:[
+   ['Bolaning ismi nima?','Karim','Ahmad','Umar','Yusuf'],
+   ['Karim kim?','Talaba',"O'qituvchi",'Shifokor','Haydovchi'],
+   ['Uning uyi qanday?','Katta','Kichik','Yangi','Eski'],
+   ['Onasi kim?',"O'qituvchi",'Shifokor','Talaba','Oshpaz'],
+   ['Qalami qanday rangda?',"Ko'k",'Qizil','Yashil','Qora']
+  ]},
+ w:[
+  {t:'order',hint:"«Men Karimman va men talabaman, bu mening yangi kitobim, bu esa mening ko'k qalamim.»",ans:['أَنَا كَرِيمٌ وَأَنَا طَالِبٌ وَهٰذَا كِتَابِي الْجَدِيدُ وَهٰذَا قَلَمِي الْأَزْرَقُ']},
+  {t:'type',p:"Harflarni qo'shib, bitta so'z qilib yozing: <span class=ar>ب + ا + ب</span>",a:['باب']},
+  {t:'type',p:"«Qalam» so'zidagi tushib qolgan harfni yozing: <span class=ar>قَـ ؟ ـمٌ</span>",a:['ل']},
+  {t:'pick',p:"Qaysi birida xato bor?",o:['هٰذِهِ بَابٌ','هٰذِهِ مُعَلِّمَةٌ','هٰذَا طَالِبٌ','هٰذَا قَلَمٌ']},
+  {t:'type',p:"Ayol jinsiga aylantirib yozing: <span class=ar>طَالِبٌ ← ؟</span>",a:['طالبة']}
+ ],
+ free:"O'zingiz haqingizda arabcha 2–3 ta gap yozing (ismingiz, kimsiz, qayerdansiz). Bilganingizcha yozing."
+},
+{id:'A1', time:10*60,
+ ins:{g:'اِخْتَرِ الْإِجَابَةَ الصَّحِيحَةَ',r:'اِقْرَأِ النَّصَّ ثُمَّ أَجِبْ',o:'رَتِّبِ الْكَلِمَاتِ لِتُكَوِّنَ جُمْلَةً صَحِيحَةً',sec:['الْقَوَاعِدُ','الْقِرَاءَةُ','الْكِتَابَةُ']},
+ g:[
+  ['ذَهَبَ أَحْمَدُ إِلَى ___ .','الْمَدْرَسَةِ','الْمَدْرَسَةُ','الْمَدْرَسَةَ','مَدْرَسَةٌ'],
+  ['لَيْلَى ___ فِي الْمَطْبَخِ.','تَطْبُخُ','يَطْبُخُ','أَطْبُخُ','نَطْبُخُ'],
+  ['هٰؤُلَاءِ ___ .','طُلَّابٌ','طَالِبٌ','طَالِبَانِ','طَالِبَةٌ'],
+  ['___ كِتَابُكَ؟ — كِتَابِي عَلَى الطَّاوِلَةِ.','أَيْنَ','مَتَى','كَيْفَ','لِمَاذَا'],
+  ['نَحْنُ ___ اللُّغَةَ الْعَرَبِيَّةَ.','نَدْرُسُ','يَدْرُسُ','تَدْرُسِينَ','أَدْرُسُ'],
+  ['هٰذِهِ أُخْتِي، ___ سَلْمَى.','اِسْمُهَا','اِسْمُهُ','اِسْمُكَ','اِسْمُهُمْ']
+ ],
+ r:{text:'اِسْمِي عُمَرُ. أَسْكُنُ فِي طَشْقَنْدَ مَعَ أُسْرَتِي. أَسْتَيْقِظُ كُلَّ يَوْمٍ فِي السَّاعَةِ السَّادِسَةِ. أَشْرَبُ الشَّايَ وَآكُلُ الْخُبْزَ، ثُمَّ أَذْهَبُ إِلَى الْجَامِعَةِ بِالْحَافِلَةِ. أُحِبُّ دَرْسَ الرِّيَاضِيَّاتِ كَثِيرًا. فِي الْمَسَاءِ أَلْعَبُ كُرَةَ الْقَدَمِ مَعَ أَصْدِقَائِي.',
+  q:[
+   ['أَيْنَ يَسْكُنُ عُمَرُ؟','فِي طَشْقَنْدَ','فِي سَمَرْقَنْدَ','فِي بُخَارَى','فِي الْقَاهِرَةِ'],
+   ['مَتَى يَسْتَيْقِظُ عُمَرُ؟','فِي السَّاعَةِ السَّادِسَةِ','فِي السَّاعَةِ السَّابِعَةِ','فِي السَّاعَةِ الثَّامِنَةِ','فِي السَّاعَةِ الْخَامِسَةِ'],
+   ['مَاذَا يَشْرَبُ؟','الشَّايَ','الْقَهْوَةَ','الْحَلِيبَ','الْعَصِيرَ'],
+   ['كَيْفَ يَذْهَبُ إِلَى الْجَامِعَةِ؟','بِالْحَافِلَةِ','بِالسَّيَّارَةِ','مَاشِيًا','بِالْقِطَارِ'],
+   ['مَاذَا يَفْعَلُ فِي الْمَسَاءِ؟','يَلْعَبُ كُرَةَ الْقَدَمِ','يَقْرَأُ كِتَابًا','يُشَاهِدُ التِّلْفَازَ','يَنَامُ']
+  ]},
+ w:[
+  {t:'order',ans:['عِنْدِي أَخٌ كَبِيرٌ اِسْمُهُ يُوسُفُ وَهُوَ يَعْمَلُ طَبِيبًا فِي الْمُسْتَشْفَى الْكَبِيرِ','عِنْدِي أَخٌ كَبِيرٌ اِسْمُهُ يُوسُفُ وَهُوَ يَعْمَلُ فِي الْمُسْتَشْفَى الْكَبِيرِ طَبِيبًا']},
+  {t:'type',p:'اُكْتُبِ الْكَلِمَةَ النَّاقِصَةَ: أَنَا أَذْهَبُ، وَهِيَ ___ .',a:['تذهب']},
+  {t:'type',p:'اُكْتُبِ الْمُؤَنَّثَ: هٰذَا مُهَنْدِسٌ ← هٰذِهِ ___ .',a:['مهندسة']},
+  {t:'pick',p:'أَيُّ جُمْلَةٍ فِيهَا خَطَأٌ؟',o:['هٰذَا بِنْتٌ جَمِيلَةٌ','هٰذَا وَلَدٌ صَغِيرٌ','هٰذِهِ غُرْفَةٌ كَبِيرَةٌ','هٰذَا بَابٌ مَفْتُوحٌ']},
+  {t:'type',p:'اُكْتُبِ الْجَوَابَ بِكَلِمَةٍ وَاحِدَةٍ: مَا ضِدُّ «كَبِيرٌ»؟',a:['صغير']}
+ ],
+ free:'اُكْتُبْ عَنْ نَفْسِكَ وَعَنْ أُسْرَتِكَ (٣–٥ جُمَلٍ).'
+},
+{id:'A2', time:12*60,
+ ins:{g:'اِخْتَرِ الْإِجَابَةَ الصَّحِيحَةَ',r:'اِقْرَأِ النَّصَّ ثُمَّ أَجِبْ',o:'رَتِّبِ الْكَلِمَاتِ لِتُكَوِّنَ جُمْلَةً صَحِيحَةً',sec:['الْقَوَاعِدُ','الْقِرَاءَةُ','الْكِتَابَةُ']},
+ g:[
+  ['أَمْسِ ___ الطُّلَّابُ إِلَى الْمَتْحَفِ.','ذَهَبَ','ذَهَبُوا','يَذْهَبُونَ','سَيَذْهَبُ'],
+  ['هٰذِهِ الْحَقِيبَةُ ___ مِنْ تِلْكَ.','أَكْبَرُ','كَبِيرَةٌ','كُبْرَى','الْأَكْبَرُ'],
+  ['لَمْ ___ أَخِي الْوَاجِبَ.','يَكْتُبْ','يَكْتُبُ','كَتَبَ','يَكْتُبُونَ'],
+  ['الْبِنْتَانِ ___ فِي الْحَدِيقَةِ.','تَلْعَبَانِ','تَلْعَبُ','يَلْعَبُونَ','تَلْعَبْنَ'],
+  ['قَرَأْتُ ___ كُتُبٍ فِي الشَّهْرِ الْمَاضِي.','ثَلَاثَةَ','ثَلَاثَ','ثَلَاثٌ','ثَالِثَ'],
+  ['هٰذَا هُوَ الرَّجُلُ ___ سَاعَدَنِي.','الَّذِي','الَّتِي','الَّذِينَ','اللَّذَانِ']
+ ],
+ r:{text:'فِي الْعُطْلَةِ الصَّيْفِيَّةِ سَافَرَتْ نُورَةُ مَعَ أُسْرَتِهَا إِلَى سَمَرْقَنْدَ. رَكِبُوا الْقِطَارَ السَّرِيعَ، وَكَانَتِ الرِّحْلَةُ قَصِيرَةً وَمُرِيحَةً. زَارُوا سَاحَةَ رِيجِسْتَانَ وَأَخَذُوا صُوَرًا كَثِيرَةً. فِي الْيَوْمِ الثَّانِي ذَهَبُوا إِلَى السُّوقِ، وَاشْتَرَتْ نُورَةُ هَدِيَّةً لِجَدَّتِهَا. كَانَ الطَّقْسُ حَارًّا جِدًّا، لِذٰلِكَ كَانُوا يَشْرَبُونَ الْمَاءَ كَثِيرًا. رَجَعُوا إِلَى الْبَيْتِ بَعْدَ ثَلَاثَةِ أَيَّامٍ، وَقَالَتْ نُورَةُ: «أُرِيدُ أَنْ أَزُورَ بُخَارَى فِي الصَّيْفِ الْقَادِمِ».',
+  q:[
+   ['كَيْفَ سَافَرَتِ الْأُسْرَةُ؟','بِالْقِطَارِ','بِالطَّائِرَةِ','بِالسَّيَّارَةِ','بِالْحَافِلَةِ'],
+   ['مَاذَا فَعَلُوا فِي سَاحَةِ رِيجِسْتَانَ؟','أَخَذُوا صُوَرًا كَثِيرَةً','اِشْتَرَوْا هَدَايَا','أَكَلُوا فِي مَطْعَمٍ','لَعِبُوا كُرَةَ الْقَدَمِ'],
+   ['لِمَنِ اشْتَرَتْ نُورَةُ الْهَدِيَّةَ؟','لِجَدَّتِهَا','لِأُمِّهَا','لِأُخْتِهَا','لِصَدِيقَتِهَا'],
+   ['لِمَاذَا كَانُوا يَشْرَبُونَ الْمَاءَ كَثِيرًا؟','لِأَنَّ الطَّقْسَ كَانَ حَارًّا','لِأَنَّ الطَّعَامَ كَانَ مَالِحًا','لِأَنَّهُمْ كَانُوا مَرْضَى','لِأَنَّ الْمَاءَ كَانَ رَخِيصًا'],
+   ['أَيْنَ تُرِيدُ نُورَةُ أَنْ تُسَافِرَ فِي الصَّيْفِ الْقَادِمِ؟','إِلَى بُخَارَى','إِلَى سَمَرْقَنْدَ','إِلَى طَشْقَنْدَ','إِلَى خِيوَةَ']
+  ]},
+ w:[
+  {t:'order',ans:['ذَهَبْتُ مَعَ صَدِيقَتِي سَلْمَى إِلَى السُّوقِ الْكَبِيرِ لِنَشْتَرِيَ مَلَابِسَ جَدِيدَةً لِحَفْلَةِ أُخْتِهَا','ذَهَبْتُ إِلَى السُّوقِ الْكَبِيرِ مَعَ صَدِيقَتِي سَلْمَى لِنَشْتَرِيَ مَلَابِسَ جَدِيدَةً لِحَفْلَةِ أُخْتِهَا']},
+  {t:'type',p:'اُكْتُبِ الْفِعْلَ (ذَهَبَ) بِالشَّكْلِ الصَّحِيحِ: أَمْسِ ___ لَيْلَى إِلَى الْمَكْتَبَةِ.',a:['ذهبت']},
+  {t:'type',p:'اُكْتُبِ الْجَمْعَ: كِتَابٌ ← ___',a:['كتب']},
+  {t:'pick',p:'أَيُّ جُمْلَةٍ فِيهَا خَطَأٌ؟',o:['الْبِنْتُ يَكْتُبُ الدَّرْسَ','الطَّالِبَاتُ يَدْرُسْنَ','الْوَلَدَانِ يَلْعَبَانِ','الْمُعَلِّمُونَ يَشْرَحُونَ']},
+  {t:'type',p:'اُكْتُبْ بِالنَّفْيِ: ذَهَبْتُ إِلَى السُّوقِ ← لَمْ ___ إِلَى السُّوقِ.',a:['اذهب']}
+ ],
+ free:'اُكْتُبْ عَنْ يَوْمِكَ أَمْسِ: مَاذَا فَعَلْتَ مِنَ الصَّبَاحِ إِلَى الْمَسَاءِ؟ (٥–٦ جُمَلٍ)'
+},
+{id:'B1', time:14*60,
+ ins:{g:'اِخْتَرِ الإجابةَ الصحيحةَ',r:'اقرأِ النصَّ ثم أجبْ',o:'رتِّبِ الكلماتِ لتكوِّنَ جملةً صحيحةً',sec:['القواعد','القراءة','الكتابة']},
+ g:[
+  ['يَجِبُ أنْ ___ الطلابُ مُبَكِّرِينَ.','يَحْضُرَ','يَحْضُرُ','يَحْضُرْ','حَضَرَ'],
+  ['كانَ الجَوُّ ___ أمسِ.','جَمِيلًا','جَمِيلٌ','جَمِيلٍ','الجَمِيلُ'],
+  ['إنَّ ___ مُجْتَهِدُونَ.','الطلابَ','الطلابُ','الطلابِ','طلابٌ'],
+  ['الطالباتُ ___ الامتحانَ بنجاحٍ.','اجْتَزْنَ','اجْتَازُوا','اجْتَازَ','اجْتَازَتَا'],
+  ['سأتَّصِلُ بكَ ___ أصِلُ إلى البيتِ.','عِنْدَمَا','لِأَنَّ','لٰكِنَّ','إِلَّا'],
+  ['هذه هي المدينةُ ___ وُلِدْتُ فيها.','الَّتِي','الَّذِي','اللَّاتِي','الَّذِينَ']
+ ],
+ r:{text:'منذُ سنتينِ قرَّرَتْ هندُ أنْ تتعلَّمَ الطَّبْخَ. في البدايةِ كانتْ تَحرِقُ الطعامَ دائمًا، وكانَ إخوتُها يضحكونَ عليها. لكنَّها لم تَيْأَسْ، بل بدأتْ تشاهدُ دروسًا على الإنترنت، وتجرِّبُ وصفاتٍ جديدةً كلَّ أسبوعٍ. وبعدَ عدَّةِ أشهرٍ أصبحَ طعامُها لذيذًا جدًّا، حتى إنَّ جارتَها طلبتْ منها أنْ تعلِّمَها. واليومَ تملكُ هندُ قناةً صغيرةً تنشرُ فيها وصفاتِها، ويتابعُها أكثرُ من خمسةِ آلافِ شخصٍ. تقولُ هندُ: «الفشلُ ليسَ نهايةَ الطريقِ، بل هو جزءٌ منه».',
+  q:[
+   ['ماذا كانَ يحدثُ في البدايةِ؟','كانتْ تحرقُ الطعامَ','كانتْ تطبخُ جيِّدًا','كانتْ تطبخُ لجيرانِها','كانتْ لا تدخلُ المطبخَ'],
+   ['كيفَ كانَ إخوتُها يتصرَّفونَ؟','يضحكونَ عليها','يساعدونَها','يطبخونَ معها','يشترونَ لها الطعامَ'],
+   ['كيفَ تعلَّمَتْ هندُ الطبخَ؟','من دروسٍ على الإنترنت','في مدرسةٍ للطبخِ','من أمِّها','من جارتِها'],
+   ['ماذا طلبتِ الجارةُ؟','أنْ تعلِّمَها الطبخَ','أنْ تطبخَ لها','أنْ تفتحَ مطعمًا','أنْ تبيعَها وصفةً'],
+   ['ما معنى كلامِ هندَ في النهايةِ؟','الفشلُ خطوةٌ نحوَ النجاحِ','الفشلُ يعني التوقُّفَ','النجاحُ سهلٌ دائمًا','الطبخُ صعبٌ جدًّا']
+  ]},
+ w:[
+  {t:'order',ans:['عِنْدَمَا وَصَلْنَا إِلَى المَحَطَّةِ كَانَ القِطَارُ قَدْ غَادَرَ فَاضْطُرِرْنَا إِلَى انْتِظَارِ القِطَارِ التَّالِي','عِنْدَمَا وَصَلْنَا إِلَى المَحَطَّةِ كَانَ قَدْ غَادَرَ القِطَارُ فَاضْطُرِرْنَا إِلَى انْتِظَارِ القِطَارِ التَّالِي']},
+  {t:'type',p:'اكتبِ الكلمةَ بالشكلِ الصحيحِ: رأيتُ ___ (المهندسون) في المصنعِ.',a:['المهندسين']},
+  {t:'type',p:'اكتبِ الفعلَ بالشكلِ الصحيحِ: الطلابُ لم ___ (يحضرون) الدرسَ.',a:['يحضروا']},
+  {t:'pick',p:'أيُّ جملةٍ فيها خطأٌ؟',o:['أصبحَ الجَوُّ جميلٌ','كانَ الطقسُ باردًا','إنَّ الطالبَ مجتهدٌ','ليسَ البيتُ بعيدًا']},
+  {t:'type',p:'حَوِّلْ إلى المثنَّى: جاءَ المعلِّمُ ← جاءَ ___ .',a:['المعلمان']}
+ ],
+ free:'اكتبْ عن هوايةٍ تحبُّها: ما هي؟ متى بدأتَ بها؟ ولماذا تحبُّها؟ (٦–٨ جملٍ)'
+},
+{id:'B2', time:16*60,
+ ins:{g:'اخترِ الإجابةَ الصحيحة',r:'اقرأِ النصَّ ثم أجب',o:'رتِّبِ الكلماتِ لتكوِّنَ جملةً صحيحة',sec:['القواعد','القراءة','الكتابة']},
+ g:[
+  ['ما ___ هذا المنظرَ!','أَجْمَلَ','أَجْمَلُ','جَمِيلَ','أَجْمَلِ'],
+  ['لو درستَ جيدًا ___ في الامتحان.','لَنَجَحْتَ','فَنَجَحْتَ','سَتَنْجَحُ','لَتَنْجَحَ'],
+  ['اشتركَ في المسابقة ___ طالبًا.','عِشْرُونَ','عِشْرِينَ','العِشْرُونَ','عِشْرُو'],
+  ['سافرتُ إلى القاهرة ___ للغة العربية.','دِرَاسَةً','دِرَاسَةٌ','دِرَاسَةٍ','الدِّرَاسَةُ'],
+  ['اخترِ الفعلَ المبنيَّ للمجهول: ___ الطالبُ المجتهدُ في الحفل.','كُرِّمَ','كَرَّمَ','يُكَرِّمُ','مُكَرَّمٌ'],
+  ['حضرَ الطلابُ ___ كريمًا.','إِلَّا','غَيْرُ','لٰكِنْ','بَلْ']
+ ],
+ r:{text:'أصبحتِ الهواتفُ الذكيةُ جزءًا لا يتجزّأ من حياتنا اليومية، فنحن نستخدمها للعمل والدراسة والتسوّق والتواصل مع الآخرين. غيرَ أنّ دراساتٍ حديثةً تشير إلى أنّ الإفراطَ في استخدامها قد يؤدّي إلى قلّة النوم وضعف التركيز، ولا سيّما لدى المراهقين. ويرى بعضُ الخبراء أنّ المشكلة لا تكمن في الهاتف نفسه، بل في طريقة استخدامه؛ إذ يمكن أن يكون أداةً نافعةً للتعلّم إذا أُحسِنَ استعمالُه. ولذلك ينصح هؤلاء بتحديد وقتٍ معيّنٍ للهاتف كلَّ يوم، وإبعاده عن غرفة النوم قبل ساعةٍ على الأقلّ من النوم.',
+  q:[
+   ['ما الفكرة الرئيسة للنص؟','أثر استخدام الهاتف وطريقة الاستفادة منه','تاريخ صناعة الهواتف','أسعار الهواتف الذكية','طريقة إصلاح الهاتف'],
+   ['مَن أكثرُ المتأثّرين بالإفراط في الاستخدام؟','المراهقون','كبار السنّ','المعلّمون','الأطباء'],
+   ['أين تكمن المشكلة برأي الخبراء؟','في طريقة الاستخدام','في الهاتف نفسه','في سعر الهاتف','في سرعة الإنترنت'],
+   ['ما معنى «لا سيّما» في النص؟','خصوصًا','أبدًا','أحيانًا','بدلًا من'],
+   ['بِمَ ينصح الخبراء؟','إبعاد الهاتف عن غرفة النوم قبل النوم','ترك الهاتف نهائيًّا','شراء هاتف جديد','استخدام الهاتف قبل النوم']
+  ]},
+ w:[
+  {t:'order',ans:['عَلَى الرَّغْمِ مِنْ أَنَّ الطَّقْسَ كَانَ بَارِدًا فَإِنَّ الأَطْفَالَ أَصَرُّوا عَلَى اللَّعِبِ فِي الحَدِيقَةِ']},
+  {t:'type',p:'اكتب المصدرَ المناسب (مفعولًا لأجله): سافر أخي ___ (رَغِبَ) في العمل.',a:['رغبة']},
+  {t:'type',p:'اكتب اسمَ التفضيل: هذه المكتبة ___ (كبير) مكتبةٍ في المدينة.',a:['اكبر']},
+  {t:'pick',p:'أيُّ جملةٍ فيها خطأ؟',o:['كان الطلابُ مجتهدون','رأيتُ مهندسين ماهرين','إنّ المعلّمين مخلصون','أصبح العمّالُ نشيطين']},
+  {t:'type',p:'حوِّلْ إلى المبنيّ للمجهول: باعَ التاجرُ البيتَ ← ___ البيتُ.',a:['بيع']}
+ ],
+ free:'هل تفضّل الدراسة عبر الإنترنت أم في الصف؟ اكتب رأيك مع ذكر سببين على الأقل. (٨–١٠ جمل)'
+},
+{id:'C1', time:18*60,
+ ins:{g:'اختر الإجابة الصحيحة',r:'اقرأ النص ثم أجب',o:'رتب الكلمات لتكون جملة صحيحة',sec:['القواعد','القراءة','الكتابة']},
+ g:[
+  ['لا ___ في الدار.','رجلَ','رجلٌ','رجلٍ','الرجلُ'],
+  ['رجع الفريق إلى بلده ___ .','منتصرًا','منتصرٌ','منتصرٍ','المنتصرُ'],
+  ['اشتريت عشرين ___ .','كتابًا','كتبًا','كتابٍ','كتبٍ'],
+  ['حضر الاجتماعَ كلا ___ .','الطالبين','الطالبان','الطالبِ','طالبين'],
+  ['لن ___ الطلابُ إلا بالاجتهاد.','ينجحَ','ينجحوا','ينجحون','نجحوا'],
+  ['سواءٌ أحضرتَ ___ لم تحضر، فالاجتماع قائم.','أم','أو','بل','ثم']
+ ],
+ r:{text:'لم تعد العولمة مجرد مصطلح اقتصادي يتداوله المختصون في قاعات المؤتمرات، بل غدت واقعا يلمسه الفرد في مأكله وملبسه وطريقة تفكيره. فقد أتاحت سهولة التنقل وتدفق المعلومات فرصا غير مسبوقة للتبادل الثقافي والتجاري بين الشعوب، وأسهمت في انتشار المعرفة على نطاق واسع. بيد أن هذا الانفتاح لم يخل من مخاطر؛ إذ يخشى كثيرون أن تذوب الثقافات المحلية في ثقافة عالمية واحدة تفرضها الدول الأقوى اقتصاديا وإعلاميا. ويرى فريق من المفكرين أن الحل لا يكمن في الانغلاق على الذات، وإنما في الانفتاح الواعي الذي يأخذ من الآخر ما ينفعه، ويحافظ على خصوصيته في الوقت نفسه.',
+  q:[
+   ['ما المقصود بأن العولمة «غدت واقعا يلمسه الفرد»؟','أنها صارت تؤثر في الحياة اليومية للناس','أنها بقيت في قاعات المؤتمرات','أنها انتهت ولم يعد لها أثر','أنها تخص الاقتصاديين وحدهم'],
+   ['ما الفوائد التي ذكرها النص؟','التبادل الثقافي والتجاري وانتشار المعرفة','ارتفاع الأسعار وقلة السفر','إغلاق الحدود بين الدول','تراجع استخدام التكنولوجيا'],
+   ['مِمَّ يخشى كثيرون؟','أن تذوب الثقافات المحلية','أن تنتشر المعرفة','أن يسهل التنقل','أن تقل المعلومات'],
+   ['ما معنى «بيد أن» في النص؟','غير أن','لأن','كما أن','حتى إن'],
+   ['ما موقف فريق المفكرين؟','الانفتاح الواعي مع الحفاظ على الخصوصية','الانغلاق التام على الذات','قبول كل ما يأتي من الآخر','رفض العولمة بكل أشكالها']
+  ]},
+ w:[
+  {t:'order',ans:['لم يكن من السهل على الحكومة اتخاذ هذا القرار لولا الضغط الذي مارسه الرأي العام','لم يكن من السهل اتخاذ هذا القرار على الحكومة لولا الضغط الذي مارسه الرأي العام','لم يكن اتخاذ هذا القرار من السهل على الحكومة لولا الضغط الذي مارسه الرأي العام']},
+  {t:'type',p:'اكتب الحال من الكلمة بين القوسين: عاد الفريق إلى بلده ___ (فرح).',a:['فرحا','فرحان']},
+  {t:'type',p:'اكتب التمييز من الكلمة بين القوسين: اشتريت خمسة عشر ___ (قلم).',a:['قلما']},
+  {t:'pick',p:'أي جملة فيها خطأ؟',o:['حضر الطلاب إلا كريمٌ','لا طالبَ في الفصل','كلا الطالبين مجتهد','رأيت عشرين طالبًا']},
+  {t:'type',p:'حوِّل إلى المبني للمجهول: اختار المدير الموظفين ← ___ الموظفون.',a:['اختير']}
+ ],
+ free:'ما رأيك في أثر وسائل التواصل الاجتماعي على العلاقات بين الناس؟ اكتب فقرة منظمة تعرض فيها رأيك وتدعمه بالأمثلة. (١٠–١٢ جملة)'
+},
+{id:'C2', time:20*60,
+ ins:{g:'اختر الإجابة الصحيحة',r:'اقرأ النص ثم أجب',o:'رتب الكلمات لتكون جملة صحيحة',sec:['القواعد','القراءة','الكتابة']},
+ g:[
+  ['إياك ___ الكذبَ.','و','من','عن','على'],
+  ['كم ___ قرأت هذا العام؟','كتابًا','كتابٍ','كتبًا','كتبٍ'],
+  ['اجتهد الطالب ___ اجتهاد.','أيَّما','أيُّما','أيِّما','أيٌّ'],
+  ['إنْ تجتهدْ ___ .','تنجحْ','تنجحُ','تنجحَ','لنجحت'],
+  ['هؤلاء طلابٌ ___ كتبُهم.','مرتبةٌ','مرتبون','مرتبين','مرتبةً'],
+  ['لم يبقَ في القاعة ___ طالبان.','إلا','غيرَ','ما عدا','حاشا']
+ ],
+ r:{text:'ليس من اليسير أن يحكم على تجربة أدبية ما بمعزل عن السياق الذي نشأت فيه؛ فالنص، مهما بلغ من الفرادة، يظل ابن عصره، يحمل همومه ويتنفس أسئلته. غير أن ثمة نصوصا تتجاوز لحظتها التاريخية فتغدو صالحة لكل زمان، لا لأنها انفصلت عن واقعها، بل لأنها نفذت إلى جوهره الإنساني العميق. ومن هنا كان النقاد الحاذقون يميزون بين أدب يصف الظاهرة وأدب يكشف عن أسبابها الخفية؛ فالأول سرعان ما يذبل بزوال الظرف الذي أوجده، أما الثاني فيزداد ألقا كلما تقادم به العهد. ولعل هذا ما يفسر عودة القراء جيلا بعد جيل إلى أعمال بعينها، يجدون فيها مرآة لأنفسهم وإن تبدلت الأزمنة.',
+  q:[
+   ['ما الفكرة المحورية في النص؟','النصوص الخالدة تنفذ إلى جوهر الإنسان فتتجاوز عصرها','على الأدب أن ينفصل عن واقعه','النقاد عاجزون عن فهم الأدب','الأدب القديم لا قيمة له اليوم'],
+   ['ما المقصود بأن النص «يظل ابن عصره»؟','أنه يتأثر بزمنه وقضاياه','أن كاتبه كان شابا','أنه نص قصير','أنه مترجم عن لغة أخرى'],
+   ['علامَ يدل قوله «يزداد ألقا كلما تقادم به العهد»؟','أن قيمته تزداد مع مرور الزمن','أنه يفقد قيمته بسرعة','أنه يصبح صعب الفهم','أن الناس ينسونه'],
+   ['ما معنى «ثمة» في النص؟','هناك','لذلك','ربما','أيضا'],
+   ['لماذا يعود القراء إلى أعمال بعينها؟','لأنهم يجدون فيها مرآة لأنفسهم','لأنها قصيرة وسهلة','لأنها مقررة في المدارس','لأنها رخيصة الثمن']
+  ]},
+ w:[
+  {t:'order',ans:['ما إن أعلنت اللجنة نتائج المسابقة حتى تعالت أصوات المشاركين بين مؤيد لقرارها ومعترض عليه بشدة']},
+  {t:'type',p:'اكتب النعت السببي من الكلمة بين القوسين: هؤلاء طلاب ___ (حسن) أخلاقهم.',a:['حسنة']},
+  {t:'type',p:'اكتب تمييز «كم» من الكلمة بين القوسين: كم ___ (طالب) حضر الندوة؟',a:['طالبا']},
+  {t:'pick',p:'أي جملة فيها خطأ؟',o:['إن تدرسْ تنجحُ','إياك والتسرعَ','كم كتابًا قرأت؟','ما أجملَ السماءَ!']},
+  {t:'type',p:'اكتب الجملة تعجبا على صيغة «أفعِلْ بـ»: الحديقة جميلة ← ___ بالحديقة!',a:['اجمل']}
+ ],
+ free:'اكتب مقالة قصيرة بعنوان «اللغة والهوية»: هل اللغة مجرد وسيلة للتواصل أم هي جزء من هوية الإنسان؟ (فقرتان على الأقل)'
+}
+];
+
+// ====== YORDAMCHI ======
+const $ = s=>document.querySelector(s);
+const app = $('#app');
+const N = s=>String(s||'').replace(/[ً-ٰٟـ]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/[.,،؟?!«»:؛()\-_]/g,' ').replace(/\s+/g,' ').trim();
+const esc = s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuf = a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const isAr = s=>/[؀-ۿ]/.test(s);
+const optHtml = s=>isAr(s)?`<span class=ar>${s}</span>`:esc(s);
+const KEY='daraja-testi-v1';
+const store = {get(){try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}},set(v){try{localStorage.setItem(KEY,JSON.stringify(v))}catch(e){}}};
+
+let S = {info:null, stages:[], li:0, items:[], idx:0, ans:[], tEnd:0, timer:null, t0:0};
+
+function brand(){return `<div class="brand"><div class="logo">ع</div><div><b>Arab tili daraja testi</b><small>Tabassum · onlayn markaz</small></div></div>`}
+
+// ====== 1. BOSHLASH ======
+function startScreen(){
+  const old = store.get();
+  if(old && old.done){ return resultScreen(old.done, true); }
+  app.innerHTML = brand()+`
+  <div class="card"><h1>Assalomu alaykum!</h1>
+  <p>Bu test arab tilini qaysi darajada bilishingizni aniqlaydi: <b>A0 dan C2 gacha</b>.</p>
+  <p class="muted">Avval ma'lumotlaringizni yozing.</p>
+  <label>Ism va familiya</label><input id="f_name" autocomplete="name" placeholder="Masalan: Aziz Karimov">
+  <label>Yoshingiz</label><input id="f_age" inputmode="numeric" placeholder="Masalan: 19">
+  <label>Telefon raqam</label><input id="f_phone" type="tel" autocomplete="tel" placeholder="+998 90 123 45 67">
+  <label>Telegram username</label><input id="f_tg" placeholder="@username">
+  <div class="err" id="f_err"></div>
+  <button class="btn" id="go">Davom etish →</button></div>
+  <div class="foot">Tabassum arab tili markazi</div>`;
+  $('#go').onclick=()=>{
+    const v={name:$('#f_name').value.trim(),age:$('#f_age').value.trim(),phone:$('#f_phone').value.trim(),tg:$('#f_tg').value.trim()};
+    if(v.name.length<3) return $('#f_err').textContent="Ism va familiyangizni yozing.";
+    if(!/^\d{1,2}$/.test(v.age)) return $('#f_err').textContent="Yoshingizni raqam bilan yozing.";
+    if(v.phone.replace(/\D/g,'').length<9) return $('#f_err').textContent="Telefon raqamni to'liq yozing.";
+    if(v.tg && v.tg[0]!=='@') v.tg='@'+v.tg;
+    S.info=v; rulesScreen();
+  };
+}
+
+function rulesScreen(){
+  app.innerHTML = brand()+`<div class="card"><h2>Test qanday o'tadi?</h2>
+  <ul class="rules">
+   <li>Test <b>A0</b> darajadan boshlanadi va asta-sekin qiyinlashadi.</li>
+   <li>Har bosqichda <b>16 ta savol</b> bor: qoida (6), o'qish (5), yozish (5).</li>
+   <li>Har bosqichning o'z <b>vaqti</b> bor. Vaqt tugasa, bosqich o'zi yakunlanadi.</li>
+   <li>Bosqichdan <b>80%</b> olsangiz, keyingi darajaga o'tasiz. Ololmasangiz, test shu yerda tugaydi.</li>
+   <li>Oxirida o'z darajangizda <b>qisqa matn</b> yozasiz. Uni ustoz o'zi tekshiradi.</li>
+   <li>Javob berib bo'lgach, orqaga qaytib bo'lmaydi.</li>
+   <li>Lug'at, tarjimon yoki boshqa yordamdan foydalanmang. Shunda sizga to'g'ri guruh tanlanadi.</li>
+   <li>A0 bosqichi o'zbekcha, A1 dan boshlab savollar arabcha bo'ladi.</li>
+  </ul>
+  <p class="muted">Arabcha yozish uchun ekranda harflar tugmasi bor.</p>
+  <button class="btn" id="go">Testni boshlash</button></div>`;
+  $('#go').onclick=()=>{S.t0=Date.now(); stageIntro(0)};
+}
+
+// ====== 2. BOSQICH ======
+function buildItems(lv){
+  const it=[];
+  lv.g.forEach(g=>it.push({sec:0,kind:'mc',p:g[0],ok:g[1],opts:shuf(g.slice(1))}));
+  lv.r.q.forEach(q=>it.push({sec:1,kind:'mc',p:q[0],ok:q[1],opts:shuf(q.slice(1)),text:lv.r.text}));
+  lv.w.forEach(w=>{
+    if(w.t==='order') it.push({sec:2,kind:'order',hint:w.hint,alts:w.ans,words:shuf(w.ans[0].split(' '))});
+    else if(w.t==='type') it.push({sec:2,kind:'type',p:w.p,alts:w.a});
+    else it.push({sec:2,kind:'mc',p:w.p,ok:w.o[0],opts:shuf(w.o)});
+  });
+  return it;
+}
+
+function stageIntro(li){
+  const lv=L[li];
+  const prev = li>0 ? `<p>✅ <b>${L[li-1].id}</b> bosqichi muvaffaqiyatli tugadi!</p>` : '';
+  app.innerHTML = brand()+`<div class="card center">${prev}
+   <p class="muted">Keyingi bosqich</p><div class="big">${lv.id}</div>
+   <p>16 ta savol · ${lv.time/60} daqiqa</p>
+   <button class="btn" id="go">Boshlash</button></div>`;
+  $('#go').onclick=()=>runStage(li);
+}
+
+function runStage(li){
+  S.li=li; S.items=buildItems(L[li]); S.idx=0; S.ans=new Array(S.items.length).fill(null);
+  S.tEnd=Date.now()+L[li].time*1000;
+  clearInterval(S.timer); S.timer=setInterval(tick,1000);
+  renderItem();
+}
+function tick(){
+  const left=Math.max(0,Math.round((S.tEnd-Date.now())/1000));
+  const el=$('#tm'); if(el){el.textContent=String(Math.floor(left/60)).padStart(2,'0')+':'+String(left%60).padStart(2,'0'); el.classList.toggle('low',left<=60);}
+  if(left<=0){clearInterval(S.timer); saveCur(); finishStage(true);}
+}
+
+function renderItem(){
+  const lv=L[S.li], it=S.items[S.idx], uz=!!lv.uz;
+  const ins = it.kind==='order'?lv.ins.o : it.sec===1?lv.ins.r : lv.ins.g;
+  let body='';
+  if(it.text) body+=`<div class="text">${it.text}</div>`;
+  if(it.kind==='mc'){
+    body+=`<div class="q" dir="auto">${it.p}</div><div class="opts">`+
+      it.opts.map((o,i)=>`<button class="opt" data-i="${i}" dir="auto">${uz?optHtml(o):o}</button>`).join('')+`</div>`;
+  } else if(it.kind==='order'){
+    if(it.hint) body+=`<div class="hint">${esc(it.hint)}</div>`;
+    body+=`<div class="built" id="built"></div><div class="pool">`+
+      it.words.map((w,i)=>`<button class="chip" data-w="${i}">${w}</button>`).join('')+`</div>`;
+    it.pick=it.pick||[];
+  } else {
+    body+=`<div class="q" dir="auto">${it.p}</div><input class="tin" id="tin" autocomplete="off" autocapitalize="off" spellcheck="false" dir="rtl">`+kbHtml();
+  }
+  const secName = lv.ins.sec[it.sec];
+  app.innerHTML = `<div class="top"><div class="toprow"><span class="badge">${lv.id}</span><span class="sec ${uz?'':'ar'}">${secName} · ${S.idx+1}/16</span><span class="timer" id="tm">--:--</span></div><div class="bar"><i style="width:${S.idx/16*100}%"></i></div></div>
+  <div class="card ${uz?'':'rtl'}"><div class="ins ${uz?'':'ar'}">${ins}</div>${body}</div>
+  <button class="btn" id="next">${S.idx===S.items.length-1?'Bosqichni yakunlash':'Keyingi →'}</button>`;
+  tick();
+  if(it.kind==='mc'){
+    app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{app.querySelectorAll('.opt').forEach(x=>x.classList.remove('on'));b.classList.add('on');it.sel=+b.dataset.i;});
+  } else if(it.kind==='order'){
+    const drawBuilt=()=>{
+      $('#built').innerHTML=it.pick.map((wi,k)=>`<button class="chip" data-k="${k}">${it.words[wi]}</button>`).join('');
+      app.querySelectorAll('.pool .chip').forEach(c=>c.classList.toggle('used',it.pick.includes(+c.dataset.w)));
+      $('#built').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{it.pick.splice(+c.dataset.k,1);drawBuilt();});
+    };
+    app.querySelectorAll('.pool .chip').forEach(c=>c.onclick=()=>{const w=+c.dataset.w; if(!it.pick.includes(w)){it.pick.push(w);drawBuilt();}});
+    drawBuilt();
+  } else bindKb($('#tin'));
+  $('#next').onclick=()=>{saveCur(); if(S.idx<S.items.length-1){S.idx++;renderItem();window.scrollTo(0,0);} else finishStage(false);};
+}
+
+function saveCur(){
+  const it=S.items[S.idx]; if(!it) return;
+  if(it.kind==='mc') S.ans[S.idx] = it.sel==null?null:it.opts[it.sel];
+  else if(it.kind==='order') S.ans[S.idx] = (it.pick||[]).map(i=>it.words[i]).join(' ');
+  else { const el=$('#tin'); S.ans[S.idx] = el?el.value:''; }
+}
+function isRight(it,a){
+  if(a==null||a==='') return false;
+  if(it.kind==='mc') return a===it.ok;
+  return it.alts.some(x=>N(x)===N(a));
+}
+
+function finishStage(timeout){
+  clearInterval(S.timer);
+  const lv=L[S.li];
+  let score=0; S.items.forEach((it,i)=>{if(isRight(it,S.ans[i])) score++;});
+  const secs=[0,0,0]; S.items.forEach((it,i)=>{if(isRight(it,S.ans[i])) secs[it.sec]++;});
+  const pass = score >= Math.ceil(S.items.length*PASS);
+  S.stages.push({id:lv.id,score,total:S.items.length,secs,pass,timeout,
+    wrong:S.items.map((it,i)=>isRight(it,S.ans[i])?null:i+1).filter(Boolean)});
+  if(pass && S.li<L.length-1) stageIntro(S.li+1);
+  else freeScreen();
+}
+
+// ====== 3. ERKIN MATN ======
+function achieved(){ const p=S.stages.filter(s=>s.pass); return p.length?p[p.length-1].id:null; }
+function freeScreen(){
+  const a=achieved(); const lv=L.find(l=>l.id===(a||'A0'));
+  const uz=!!lv.uz;
+  let left=10*60, tEnd=Date.now()+left*1000;
+  app.innerHTML = brand()+`<div class="card"><h2>Oxirgi qism: erkin yozish</h2>
+   <p class="muted">Quyidagi mavzuda arabcha yozing. Bu qismni ustoz o'zi tekshiradi. Vaqt: 10 daqiqa · <b id="ftm">10:00</b></p>
+   <div class="hint ${uz?'':'rtl'}" style="font-size:${uz?15:20}px">${esc(lv.free)}</div>
+   <textarea id="ft" dir="rtl" placeholder="اُكْتُبْ هُنَا..."></textarea>${kbHtml()}
+   <button class="btn" id="send">Yakunlash va yuborish</button></div>`;
+  bindKb($('#ft'));
+  const t=setInterval(()=>{left=Math.max(0,Math.round((tEnd-Date.now())/1000));const e=$('#ftm');if(e)e.textContent=String(Math.floor(left/60)).padStart(2,'0')+':'+String(left%60).padStart(2,'0'); if(left<=0){clearInterval(t);go();}},1000);
+  let sent=false;
+  const go=async()=>{
+    if(sent) return; sent=true; clearInterval(t);
+    const txt=($('#ft')||{}).value||'';
+    const b=$('#send'); if(b){b.disabled=true;b.textContent='Yuborilmoqda...';}
+    const res=makeResult(lv,txt);
+    res.sent = await sendTg(res);
+    store.set({done:res});
+    resultScreen(res,false);
+  };
+  $('#send').onclick=go;
+}
+
+function levelInfo(a){
+  if(!a) return {lvl:'A0 dan past', rec:"A0 (boshidan)"};
+  const i=L.findIndex(l=>l.id===a);
+  return {lvl:a, rec: i<L.length-1 ? L[i+1].id : 'C2 (eng yuqori)'};
+}
+function makeResult(lv,txt){
+  const a=achieved(), li=levelInfo(a);
+  return {info:S.info, level:li.lvl, rec:li.rec, stages:S.stages, freeLvl:lv.id, freeTopic:lv.free, text:txt,
+    mins:Math.round((Date.now()-S.t0)/60000), date:new Date().toLocaleString('uz-UZ')};
+}
+
+async function sendTg(r){
+  if(!BOT_TOKEN||!CHAT_ID) return false;
+  const st=r.stages.map(s=>`${s.pass?'✅':'❌'} ${s.id}: ${s.score}/${s.total} (qoida ${s.secs[0]}/6, o'qish ${s.secs[1]}/5, yozish ${s.secs[2]}/5)${s.timeout?' ⏱vaqt tugadi':''}${s.wrong.length?'\n     xato: '+s.wrong.join(', '):''}`).join('\n');
+  const msg=`🧪 <b>Yangi daraja testi</b>
+👤 <b>${esc(r.info.name)}</b>, ${esc(r.info.age)} yosh
+📞 ${esc(r.info.phone)}
+✈️ ${esc(r.info.tg||'—')}
+
+🏅 <b>Daraja: ${r.level}</b>
+📚 Tavsiya: <b>${r.rec}</b> dan boshlash
+⏱ ${r.mins} daqiqa · ${esc(r.date)}
+
+📊 Bosqichlar:
+${st}
+
+✍️ <b>Erkin matn</b> (${r.freeLvl}):
+<i>${esc(r.freeTopic)}</i>
+
+${esc(r.text.trim()||'— (yozmadi)').slice(0,2800)}`;
+  try{
+    const resp=await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:CHAT_ID,text:msg,parse_mode:'HTML'})});
+    const j=await resp.json(); return !!j.ok;
+  }catch(e){return false}
+}
+
+// ====== 4. NATIJA ======
+function resultScreen(r,again){
+  app.innerHTML = brand()+`<div class="card center">
+   <p class="muted">${esc(r.info.name)}, sizning darajangiz</p>
+   <div class="big">${r.level}</div>
+   <p>Tavsiya: <b>${r.rec}</b> guruhidan boshlash</p>
+   <p class="muted">Erkin yozgan matningizni ustoz tekshirib, aniq guruhni aytadi.</p>
+   ${r.sent?`<p>✅ Natijangiz ustozga yuborildi.</p>`:`<p class="err">⚠️ Natija avtomatik yuborilmadi. Iltimos, shu ekranni <b>skrinshot</b> qilib ustozga yuboring.</p>`}
+   <p class="muted">${esc(r.date)}${again?' · test avval topshirilgan':''}</p>
+   ${!r.sent?`<button class="btn ghost" id="retry">Qayta yuborish</button>`:''}
+  </div><div class="foot">Tabassum arab tili markazi</div>`;
+  const rb=$('#retry'); if(rb) rb.onclick=async()=>{rb.disabled=true;rb.textContent='Yuborilmoqda...';r.sent=await sendTg(r);store.set({done:r});resultScreen(r,again);};
+}
+
+// ====== ARABCHA KLAVIATURA ======
+function kbHtml(){
+  const rows='ض ص ث ق ف غ ع ه خ ح ج ش س ي ب ل ا ت ن م ك ط ذ ئ ء ؤ ر ى ة و ز ظ د أ إ آ'.split(' ');
+  return `<button class="kbt" type="button" data-kbt>⌨️ Arabcha harflar</button><div class="kb" hidden>`+
+    rows.map(c=>`<button type="button" data-c="${c}">${c}</button>`).join('')+
+    `<button type="button" class="w4" data-c=" ">bo'shliq</button><button type="button" class="w2" data-del>⌫</button></div>`;
+}
+function bindKb(inp){
+  const kb=app.querySelector('.kb'), t=app.querySelector('[data-kbt]');
+  t.onclick=()=>{kb.hidden=!kb.hidden;};
+  kb.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    if(b.dataset.del!=null) inp.value=inp.value.slice(0,-1);
+    else inp.value+=b.dataset.c;
+  });
+}
+
+startScreen();
+</script>
+</body>
+</html>
