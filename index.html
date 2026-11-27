@@ -286,6 +286,7 @@ function brand(){return `<div class="brand"><div class="logo">ع</div><div><b>Ar
 function startScreen(){
   const old = store.get();
   if(old && old.done){ return resultScreen(old.done, true); }
+  if(old && old.prog){ return resume(old.prog); }
   app.innerHTML = brand()+`
   <div class="card"><h1>Assalomu alaykum!</h1>
   <p>Bu test arab tilini qaysi darajada bilishingizni aniqlaydi: <b>A0 dan C2 gacha</b>.</p>
@@ -303,7 +304,7 @@ function startScreen(){
     if(!/^\d{1,2}$/.test(v.age)) return $('#f_err').textContent="Yoshingizni raqam bilan yozing.";
     if(v.phone.replace(/\D/g,'').length<9) return $('#f_err').textContent="Telefon raqamni to'liq yozing.";
     if(v.tg && v.tg[0]!=='@') v.tg='@'+v.tg;
-    S.info=v; rulesScreen();
+    S.info=v; persist('rules'); rulesScreen();
   };
 }
 
@@ -337,8 +338,27 @@ function buildItems(lv){
   return it;
 }
 
+// ====== DAVOM ETTIRISH (chiqib ketsa) ======
+function persist(phase,extra){
+  S.phase=phase;
+  const p={phase,info:S.info,stages:S.stages,li:S.li,items:S.items,idx:S.idx,ans:S.ans,tEnd:S.tEnd,t0:S.t0,fEnd:S.fEnd,draft:S.draft};
+  store.set({prog:p});
+}
+function resume(p){
+  Object.assign(S,{info:p.info,stages:p.stages||[],li:p.li||0,items:p.items||[],idx:p.idx||0,ans:p.ans||[],tEnd:p.tEnd||0,t0:p.t0||Date.now(),fEnd:p.fEnd,draft:p.draft||'',phase:p.phase});
+  if(p.phase==='rules') return rulesScreen();
+  if(p.phase==='intro') return stageIntro(S.li);
+  if(p.phase==='free') return freeScreen();
+  if(p.phase==='stage'){
+    if(Date.now()>=S.tEnd){ saveCur(); return finishStage(true); }
+    clearInterval(S.timer); S.timer=setInterval(tick,1000);
+    return renderItem();
+  }
+  startScreen();
+}
+
 function stageIntro(li){
-  const lv=L[li];
+  const lv=L[li]; S.li=li; persist('intro');
   const prev = li>0 ? `<p>✅ <b>${L[li-1].id}</b> bosqichi muvaffaqiyatli tugadi!</p>` : '';
   app.innerHTML = brand()+`<div class="card center">${prev}
    <p class="muted">Keyingi bosqich</p><div class="big">${lv.id}</div>
@@ -351,12 +371,13 @@ function runStage(li){
   S.li=li; S.items=buildItems(L[li]); S.idx=0; S.ans=new Array(S.items.length).fill(null);
   S.tEnd=Date.now()+L[li].time*1000;
   clearInterval(S.timer); S.timer=setInterval(tick,1000);
+  persist('stage');
   renderItem();
 }
 function tick(){
   const left=Math.max(0,Math.round((S.tEnd-Date.now())/1000));
   const el=$('#tm'); if(el){el.textContent=String(Math.floor(left/60)).padStart(2,'0')+':'+String(left%60).padStart(2,'0'); el.classList.toggle('low',left<=60);}
-  if(left<=0){clearInterval(S.timer); saveCur(); finishStage(true);}
+  if(left<=0 && S.phase==='stage'){clearInterval(S.timer); saveCur(); finishStage(true);}
 }
 
 function renderItem(){
@@ -366,39 +387,40 @@ function renderItem(){
   if(it.text) body+=`<div class="text">${it.text}</div>`;
   if(it.kind==='mc'){
     body+=`<div class="q" dir="auto">${it.p}</div><div class="opts">`+
-      it.opts.map((o,i)=>`<button class="opt" data-i="${i}" dir="auto">${uz?optHtml(o):o}</button>`).join('')+`</div>`;
+      it.opts.map((o,i)=>`<button class="opt${it.sel===i?' on':''}" data-i="${i}" dir="auto">${uz?optHtml(o):o}</button>`).join('')+`</div>`;
   } else if(it.kind==='order'){
     if(it.hint) body+=`<div class="hint">${esc(it.hint)}</div>`;
     body+=`<div class="built" id="built"></div><div class="pool">`+
       it.words.map((w,i)=>`<button class="chip" data-w="${i}">${w}</button>`).join('')+`</div>`;
     it.pick=it.pick||[];
   } else {
-    body+=`<div class="q" dir="auto">${it.p}</div><input class="tin" id="tin" autocomplete="off" autocapitalize="off" spellcheck="false" dir="rtl">`+kbHtml();
+    body+=`<div class="q" dir="auto">${it.p}</div><input class="tin" id="tin" autocomplete="off" autocapitalize="off" spellcheck="false" dir="rtl" value="${esc(it.val||'')}">`+kbHtml();
   }
   const secName = lv.ins.sec[it.sec];
   app.innerHTML = `<div class="top"><div class="toprow"><span class="badge">${lv.id}</span><span class="sec ${uz?'':'ar'}">${secName} · ${S.idx+1}/16</span><span class="timer" id="tm">--:--</span></div><div class="bar"><i style="width:${S.idx/16*100}%"></i></div></div>
   <div class="card ${uz?'':'rtl'}"><div class="ins ${uz?'':'ar'}">${ins}</div>${body}</div>
   <button class="btn" id="next">${S.idx===S.items.length-1?'Bosqichni yakunlash':'Keyingi →'}</button>`;
-  tick();
   if(it.kind==='mc'){
-    app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{app.querySelectorAll('.opt').forEach(x=>x.classList.remove('on'));b.classList.add('on');it.sel=+b.dataset.i;});
+    app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{app.querySelectorAll('.opt').forEach(x=>x.classList.remove('on'));b.classList.add('on');it.sel=+b.dataset.i;persist('stage');});
   } else if(it.kind==='order'){
     const drawBuilt=()=>{
       $('#built').innerHTML=it.pick.map((wi,k)=>`<button class="chip" data-k="${k}">${it.words[wi]}</button>`).join('');
       app.querySelectorAll('.pool .chip').forEach(c=>c.classList.toggle('used',it.pick.includes(+c.dataset.w)));
       $('#built').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{it.pick.splice(+c.dataset.k,1);drawBuilt();});
+      persist('stage');
     };
     app.querySelectorAll('.pool .chip').forEach(c=>c.onclick=()=>{const w=+c.dataset.w; if(!it.pick.includes(w)){it.pick.push(w);drawBuilt();}});
     drawBuilt();
-  } else bindKb($('#tin'));
-  $('#next').onclick=()=>{saveCur(); if(S.idx<S.items.length-1){S.idx++;renderItem();window.scrollTo(0,0);} else finishStage(false);};
+  } else { const tin=$('#tin'); bindKb(tin); tin.addEventListener('input',()=>{it.val=tin.value;persist('stage');}); }
+  $('#next').onclick=()=>{saveCur(); if(S.idx<S.items.length-1){S.idx++;persist('stage');renderItem();window.scrollTo(0,0);} else finishStage(false);};
+  tick();
 }
 
 function saveCur(){
   const it=S.items[S.idx]; if(!it) return;
   if(it.kind==='mc') S.ans[S.idx] = it.sel==null?null:it.opts[it.sel];
   else if(it.kind==='order') S.ans[S.idx] = (it.pick||[]).map(i=>it.words[i]).join(' ');
-  else { const el=$('#tin'); S.ans[S.idx] = el?el.value:''; }
+  else { const el=$('#tin'); S.ans[S.idx] = el?el.value:(it.val||''); }
 }
 function isRight(it,a){
   if(a==null||a==='') return false;
@@ -414,8 +436,9 @@ function finishStage(timeout){
   const pass = score >= Math.ceil(S.items.length*PASS);
   S.stages.push({id:lv.id,score,total:S.items.length,secs,pass,timeout,
     wrong:S.items.map((it,i)=>isRight(it,S.ans[i])?null:i+1).filter(Boolean)});
+  S.items=[]; S.ans=[]; S.idx=0;
   if(pass && S.li<L.length-1) stageIntro(S.li+1);
-  else freeScreen();
+  else { S.fEnd=Date.now()+10*60*1000; S.draft=''; freeScreen(); }
 }
 
 // ====== 3. ERKIN MATN ======
@@ -423,13 +446,16 @@ function achieved(){ const p=S.stages.filter(s=>s.pass); return p.length?p[p.len
 function freeScreen(){
   const a=achieved(); const lv=L.find(l=>l.id===(a||'A0'));
   const uz=!!lv.uz;
-  let left=10*60, tEnd=Date.now()+left*1000;
+  if(!S.fEnd) S.fEnd=Date.now()+10*60*1000;
+  const tEnd=S.fEnd; let left=Math.max(0,Math.round((tEnd-Date.now())/1000));
+  persist('free');
   app.innerHTML = brand()+`<div class="card"><h2>Oxirgi qism: erkin yozish</h2>
    <p class="muted">Quyidagi mavzuda arabcha yozing. Bu qismni ustoz o'zi tekshiradi. Vaqt: 10 daqiqa · <b id="ftm">10:00</b></p>
    <div class="hint ${uz?'':'rtl'}" style="font-size:${uz?15:20}px">${esc(lv.free)}</div>
    <textarea id="ft" dir="rtl" placeholder="اُكْتُبْ هُنَا..."></textarea>${kbHtml()}
    <button class="btn" id="send">Yakunlash va yuborish</button></div>`;
-  bindKb($('#ft'));
+  const ft=$('#ft'); ft.value=S.draft||''; bindKb(ft);
+  ft.addEventListener('input',()=>{S.draft=ft.value;persist('free');});
   const t=setInterval(()=>{left=Math.max(0,Math.round((tEnd-Date.now())/1000));const e=$('#ftm');if(e)e.textContent=String(Math.floor(left/60)).padStart(2,'0')+':'+String(left%60).padStart(2,'0'); if(left<=0){clearInterval(t);go();}},1000);
   let sent=false;
   const go=async()=>{
